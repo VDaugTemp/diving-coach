@@ -6,12 +6,18 @@ readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi>=0.115.12",
-    "jupyter>=1.1.1",
-    "matplotlib>=3.8.0",
-    "numpy>=1.24.0",
     "openai",
-    "pandas>=2.0.0",
     "pydantic>=2.11.4",
     "uvicorn>=0.34.2",
     "python-multipart>=0.0.18",
+]
+
+# Optional development dependencies (not needed for production API)
+# Install with: uv sync --extra dev
+[project.optional-dependencies]
+dev = [
+    "jupyter>=1.1.1",
+    "matplotlib>=3.8.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
 ]
