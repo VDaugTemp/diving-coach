@@ -21,3 +21,6 @@ __pycache__/
 *.h5
 *.hdf5
 
+# Lock file - use requirements.txt instead to avoid installing dev dependencies
+uv.lock
+

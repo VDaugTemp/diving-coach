@@ -144,28 +144,33 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },
-    { name = "jupyter" },
-    { name = "matplotlib" },
-    { name = "numpy" },
     { name = "openai" },
-    { name = "pandas" },
     { name = "pydantic" },
     { name = "python-multipart" },
     { name = "uvicorn" },
 ]
 
+[package.optional-dependencies]
+dev = [
+    { name = "jupyter" },
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115.12" },
-    { name = "jupyter", specifier = ">=1.1.1" },
-    { name = "matplotlib", specifier = ">=3.8.0" },
-    { name = "numpy", specifier = ">=1.24.0" },
+    { name = "jupyter", marker = "extra == 'dev'", specifier = ">=1.1.1" },
+    { name = "matplotlib", marker = "extra == 'dev'", specifier = ">=3.8.0" },
+    { name = "numpy", marker = "extra == 'dev'", specifier = ">=1.24.0" },
     { name = "openai" },
-    { name = "pandas", specifier = ">=2.0.0" },
+    { name = "pandas", marker = "extra == 'dev'", specifier = ">=2.0.0" },
     { name = "pydantic", specifier = ">=2.11.4" },
     { name = "python-multipart", specifier = ">=0.0.18" },
     { name = "uvicorn", specifier = ">=0.34.2" },
 ]
+provides-extras = ["dev"]
 
 [[package]]
 name = "bleach"

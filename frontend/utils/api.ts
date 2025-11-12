@@ -2,8 +2,23 @@
  * API utilities for communicating with the FastAPI backend
  */
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Get API base URL - use relative URLs in browser (same domain), or explicit env var
+const getApiBaseUrl = (): string => {
+  // If explicitly set via environment variable, use it
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  // In browser (client-side), use relative URLs for same-origin requests
+  // This works because both frontend and backend are on the same Vercel domain
+  // Check at runtime, not module load time
+  if (typeof window !== "undefined") {
+    return ""; // Empty string means relative URLs
+  }
+  
+  // Server-side rendering fallback to localhost
+  return "http://localhost:8000";
+};
 
 export interface ChatRequest {
   developer_message: string;
@@ -21,7 +36,10 @@ export async function streamChat(
   onError: (error: string) => void
 ) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/chat`, {
+    // Get API base URL at runtime (not module load time)
+    const baseUrl = getApiBaseUrl();
+    const apiUrl = baseUrl ? `${baseUrl}/api/chat` : "/api/chat";
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +84,10 @@ export async function streamChat(
  */
 export async function checkHealth(): Promise<boolean> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/health`);
+    // Get API base URL at runtime (not module load time)
+    const baseUrl = getApiBaseUrl();
+    const apiUrl = baseUrl ? `${baseUrl}/api/health` : "/api/health";
+    const response = await fetch(apiUrl);
     return response.ok;
   } catch {
     return false;
