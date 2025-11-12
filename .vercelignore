@@ -1,0 +1,23 @@
+# Virtual environments
+activate/
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Development files
+*.ipynb
+.pytest_cache/
+.coverage
+
+# Large data files
+*.csv
+*.parquet
+*.h5
+*.hdf5
+
