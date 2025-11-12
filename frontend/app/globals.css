@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseOnce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-pulse-once {
+  animation: pulseOnce 0.3s ease-in-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient 5s ease infinite;
+}
+
+/* Theme CSS Variables
+ * These are set dynamically via JavaScript in ThemeContext
+ * This provides a fallback and ensures smooth transitions
+ */
+:root {
+  /* Base colors */
+  --theme-bg: #f3f4f6;
+  --theme-surface: #ffffff;
+  --theme-primary: #3b82f6;
+  --theme-secondary: #6b7280;
+  --theme-text: #1f2937;
+  --theme-text-secondary: #6b7280;
+  --theme-border: #e5e7eb;
+  
+  /* Effects */
+  --theme-glow: rgba(59, 130, 246, 0.1);
+  --theme-hover-glow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  
+  /* Components */
+  --theme-card-bg: #ffffff;
+  --theme-card-border: 1px solid #e5e7eb;
+  --theme-input-bg: rgba(255, 255, 255, 0.8);
+  
+  /* Messages */
+  --theme-message-user-bg: #3b82f6;
+  --theme-message-user-text: #ffffff;
+  --theme-message-bot-bg: #ffffff;
+  --theme-message-bot-text: #1f2937;
+  
+  /* Typography */
+  --theme-font-family: 'Inter', sans-serif;
+  
+  /* Interactive states */
+  --theme-hover-bg: rgba(0, 0, 0, 0.05);
+  --theme-button-text: #ffffff;
+  
+  /* Special effects */
+  --theme-backdrop-blur: blur(10px);
+  --theme-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  --theme-card-box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  
+  /* Chart colors */
+  --theme-chart-line: #3b82f6;
+  --theme-chart-bar: #10b981;
+  
+  /* Success/Info states */
+  --theme-success-bg: #dcfce7;
+  --theme-success-border: #86efac;
+  --theme-success-text: #166534;
+}
+
+/* Theme transitions */
+* {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
