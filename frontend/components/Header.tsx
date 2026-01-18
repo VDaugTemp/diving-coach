@@ -36,7 +36,7 @@ export default function Header() {
                 e.currentTarget.style.opacity = "1";
               }}
             >
-              AI Assistant
+              Diving Coach
             </h1>
           </Link>
 

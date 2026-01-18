@@ -150,7 +150,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
 
     await streamChat(
       {
-        developer_message: "You are a helpful AI assistant.",
+        developer_message: "You are a knowledgeable diving coach specializing in scuba diving and freediving education. Your role is to explain diving principles, safety considerations, training methods, and equipment knowledge in a clear, professional, and safety-conscious manner. Always emphasize that your guidance is educational only and cannot replace professional instruction, medical advice, or certification courses. Encourage safe diving practices including proper training, buddy diving, and respecting personal limits.",
         user_message: messageContent.trim(),
       },
       (chunk) => {
@@ -225,14 +225,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
             disabled={isStreaming}
           />
           {!input && (
-            <div
-              className={`absolute left-3 top-3 pointer-events-none transition-all duration-200 ${
-                isFocused ? "text-xs -translate-y-2 opacity-70 animate-float" : "text-sm"
-              }`}
-              style={{ color: styles.textSecondary }}
-            >
-              Type your message or select a prompt above...
-            </div>
+              <div
+                className={`absolute left-3 top-3 pointer-events-none transition-all duration-200 ${
+                  isFocused ? "text-xs -translate-y-2 opacity-70 animate-float" : "text-sm"
+                }`}
+                style={{ color: styles.textSecondary }}
+              >
+                Ask about diving safety, training, or techniques...
+              </div>
           )}
         </div>
         <motion.button
@@ -396,7 +396,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
                 }`}
                 style={{ color: styles.textSecondary }}
               >
-                Type your message...
+                Ask about diving safety, training, or techniques...
               </div>
             )}
           </div>

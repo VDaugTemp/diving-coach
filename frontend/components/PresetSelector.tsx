@@ -46,18 +46,25 @@ export default function PresetSelector({ onSelect }: PresetSelectorProps) {
       style={{ backgroundColor: styles.bg }}
     >
       <div className="w-full max-w-2xl flex flex-col items-center">
-        <div className="mb-6 text-center">
+        <div className="mb-6 text-center max-w-xl">
           <h3
-            className="text-2xl font-semibold mb-2"
+            className="text-2xl font-semibold mb-3"
             style={{ color: styles.text, fontFamily: styles.fontFamily }}
           >
-            Hi! 👋
+            Welcome to Your Diving Coach 🤿
           </h3>
           <p
-            className="text-base"
+            className="text-base leading-relaxed mb-2"
             style={{ color: styles.textSecondary, fontFamily: styles.fontFamily }}
           >
-            Here's something I can help you with today:
+            This assistant helps you understand diving principles, safety considerations, 
+            and training structure for scuba and freediving.
+          </p>
+          <p
+            className="text-sm italic"
+            style={{ color: styles.textSecondary, fontFamily: styles.fontFamily, opacity: 0.8 }}
+          >
+            Educational only • Not a replacement for professional instruction • Always dive with a buddy
           </p>
         </div>
 
@@ -104,7 +111,7 @@ export default function PresetSelector({ onSelect }: PresetSelectorProps) {
                 scale: 1.05,
               }}
             >
-              Show me something else
+              Show me another topic
             </motion.button>
           </div>
         )}

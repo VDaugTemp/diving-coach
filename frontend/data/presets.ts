@@ -19,162 +19,164 @@ export interface PresetCategory {
 // Default preset prompts - this is the original set that can be restored
 export const DEFAULT_PRESETS: PresetCategory[] = [
   {
-    name: "Decision Making & Planning",
-    emoji: "🤔",
+    name: "Safety & Risk Management",
+    emoji: "🛟",
     prompts: [
       {
-        id: "decision-1",
+        id: "safety-1",
         text:
-          "Help me think through the pros and cons of a major decision I'm facing. Ask me questions to understand my situation better.",
-        category: "Decision Making",
-        emoji: "🤔",
+          "Explain the risks of shallow water blackout and how divers reduce them.",
+        category: "Safety",
+        emoji: "🛟",
       },
       {
-        id: "decision-2",
+        id: "safety-2",
         text:
-          "I'm considering two different career paths. Can you help me evaluate the pros and cons of each option?",
-        category: "Decision Making",
-        emoji: "🤔",
+          "What are the key considerations for safe equalization during descent?",
+        category: "Safety",
+        emoji: "🛟",
       },
       {
-        id: "decision-3",
-        text: "Help me plan a thoughtful birthday surprise. What are some creative ideas I should consider?",
-        category: "Decision Making",
-        emoji: "🤔",
+        id: "safety-3",
+        text:
+          "What should I consider before returning to scuba diving after a long break?",
+        category: "Safety",
+        emoji: "🛟",
       },
     ],
   },
   {
-    name: "Communication & Writing",
-    emoji: "✍️",
+    name: "Freediving Training",
+    emoji: "🌊",
     prompts: [
       {
-        id: "comm-1",
+        id: "freediving-1",
         text:
-          "Draft a polite follow-up message for someone who hasn't responded to my previous message. Make it friendly and non-pushy.",
-        category: "Communication",
-        emoji: "✍️",
+          "How should a beginner structure freediving training in a pool?",
+        category: "Freediving",
+        emoji: "🌊",
       },
       {
-        id: "comm-2",
+        id: "freediving-2",
         text:
-          "Help me write a professional email. I'll tell you who it's for and what it's about.",
-        category: "Communication",
-        emoji: "✍️",
+          "What are the differences between static, dynamic, and depth freediving disciplines?",
+        category: "Freediving",
+        emoji: "🌊",
       },
       {
-        id: "comm-3",
+        id: "freediving-3",
         text:
-          "I have a message I'd like to rewrite. Can you help me make it sound more professional and polished?",
-        category: "Communication",
-        emoji: "✍️",
+          "How does CO₂ tolerance training work, and what does it actually improve?",
+        category: "Freediving",
+        emoji: "🌊",
       },
     ],
   },
   {
-    name: "Daily Planning & Organization",
-    emoji: "📅",
+    name: "Scuba Fundamentals",
+    emoji: "🤿",
     prompts: [
       {
-        id: "planning-1",
-        text: "Help me create an effective daily schedule. What's the best way to structure my day for maximum productivity?",
-        category: "Planning",
-        emoji: "📅",
+        id: "scuba-1",
+        text:
+          "What is the relationship between depth, pressure, and air consumption in scuba diving?",
+        category: "Scuba",
+        emoji: "🤿",
       },
       {
-        id: "planning-2",
+        id: "scuba-2",
         text:
-          "What should I focus on today? Help me identify my top priorities and create a plan.",
-        category: "Planning",
-        emoji: "📅",
+          "Explain how decompression sickness occurs and how dive planning helps prevent it.",
+        category: "Scuba",
+        emoji: "🤿",
       },
       {
-        id: "planning-3",
+        id: "scuba-3",
         text:
-          "Help me organize my week. What's the best approach to balance my work, personal tasks, and self-care?",
-        category: "Planning",
-        emoji: "📅",
+          "What are the key differences between recreational and technical diving?",
+        category: "Scuba",
+        emoji: "🤿",
       },
     ],
   },
   {
-    name: "Personal Tasks & Reminders",
-    emoji: "✅",
+    name: "Physiology & Breathing",
+    emoji: "🫁",
     prompts: [
       {
-        id: "tasks-1",
+        id: "physiology-1",
         text:
-          "I have some ingredients in my fridge and need meal ideas. Can you suggest recipes based on what I have?",
-        category: "Tasks",
-        emoji: "✅",
+          "How does breath-hold affect oxygen and CO₂ levels in the body during freediving?",
+        category: "Physiology",
+        emoji: "🫁",
       },
       {
-        id: "tasks-2",
+        id: "physiology-2",
         text:
-          "Help me create a comprehensive checklist for an upcoming trip. What are the essential things I shouldn't forget?",
-        category: "Tasks",
-        emoji: "✅",
+          "What is the mammalian dive reflex and how does it help freedivers?",
+        category: "Physiology",
+        emoji: "🫁",
       },
       {
-        id: "tasks-3",
+        id: "physiology-3",
         text:
-          "What are some important things I should remember to do this week? Help me think of tasks I might be forgetting.",
-        category: "Tasks",
-        emoji: "✅",
+          "Why is proper breathing technique important before a freedive?",
+        category: "Physiology",
+        emoji: "🫁",
       },
     ],
   },
   {
-    name: "Problem Solving & Advice",
-    emoji: "💡",
+    name: "Equipment & Preparation",
+    emoji: "⚙️",
     prompts: [
       {
-        id: "advice-1",
+        id: "equipment-1",
         text:
-          "I'm facing a challenge and need help thinking through solutions. Can you ask me questions to better understand my situation?",
-        category: "Advice",
-        emoji: "💡",
+          "What equipment is essential for a beginner freediver, and what can wait?",
+        category: "Equipment",
+        emoji: "⚙️",
       },
       {
-        id: "advice-2",
+        id: "equipment-2",
         text:
-          "I'm dealing with a difficult situation at work. What are some strategies I could use to handle it effectively?",
-        category: "Advice",
-        emoji: "💡",
+          "How do I choose the right wetsuit thickness for different water temperatures?",
+        category: "Equipment",
+        emoji: "⚙️",
       },
       {
-        id: "advice-3",
+        id: "equipment-3",
         text:
-          "Help me brainstorm creative ways to achieve a goal I have. I'll share the goal with you.",
-        category: "Advice",
-        emoji: "💡",
+          "What should be included in a pre-dive safety check for scuba gear?",
+        category: "Equipment",
+        emoji: "⚙️",
       },
     ],
   },
   {
-    name: "Time Management & Productivity",
-    emoji: "⏰",
+    name: "Training Principles",
+    emoji: "📊",
     prompts: [
       {
-        id: "time-1",
+        id: "training-1",
         text:
-          "I have multiple tasks to complete. How should I prioritize them? What's the best method for deciding what to do first?",
-        category: "Time Management",
-        emoji: "⏰",
+          "How should I structure a progressive training plan for improving breath-hold time?",
+        category: "Training",
+        emoji: "📊",
       },
       {
-        id: "time-2",
+        id: "training-2",
         text:
-          "Help me estimate how long different tasks will take. I'll share my task list with you.",
-        category: "Time Management",
-        emoji: "⏰",
+          "What are the signs of overtraining in freediving, and how can I avoid them?",
+        category: "Training",
+        emoji: "📊",
       },
       {
-        id: "time-3",
+        id: "training-3",
         text:
-          "I have a big project to tackle. What's the best way to break it down into smaller, manageable steps?",
-        category: "Time Management",
-        emoji: "⏰",
+          "How do dry training exercises complement in-water freediving practice?",
+        category: "Training",
+        emoji: "📊",
       },
     ],
   },

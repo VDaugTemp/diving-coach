@@ -1,13 +1,15 @@
-# Frontend - AI Assistant
+# Frontend - Diving Coach 🤿
 
-A Next.js-based personal AI assistant with preset prompts, metrics dashboard, and chat history persistence.
+A Next.js-based diving education assistant focused on scuba and freediving. Learn about safety, training principles, and dive preparation through an interactive chat interface.
 
 ## Features
 
-- **Preset Prompts**: Organized by categories (Learning, Games, Creativity, Reflection, Productivity, Tech)
+- **Diving-Specific Prompts**: Organized by categories (Safety, Freediving, Scuba, Physiology, Equipment, Training)
 - **Chat History**: Persisted in localStorage with session management
-- **Metrics Dashboard**: Mock metrics displayed with Recharts visualizations
+- **Educational Focus**: Safety-first guidance on diving principles and techniques
 - **Settings Page**: Clear history and reset presets functionality
+
+> **Important:** This is an educational tool only. It does not replace professional instruction, medical advice, or certification courses. Always dive with proper training and a buddy.
 
 ## Getting Started
 

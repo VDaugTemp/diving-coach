@@ -54,12 +54,12 @@ const renderWithProviders = (component: React.ReactElement) => {
 describe("Header", () => {
   it("renders the application title", () => {
     renderWithProviders(<Header />);
-    expect(screen.getByText("AI Assistant")).toBeInTheDocument();
+    expect(screen.getByText("Diving Coach")).toBeInTheDocument();
   });
 
   it("renders the title as a link to home", () => {
     renderWithProviders(<Header />);
-    const titleLink = screen.getByText("AI Assistant").closest("a");
+    const titleLink = screen.getByText("Diving Coach").closest("a");
     expect(titleLink).toHaveAttribute("href", "/");
   });
 

@@ -4,8 +4,8 @@ import { ChatHistoryProviderWrapper } from "@/components/ChatHistoryProviderWrap
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Assistant",
-  description: "Your personal AI assistant powered by OpenAI",
+  title: "Diving Coach",
+  description: "Your personal diving coach for scuba and freediving education, safety, and training principles",
 };
 
 export default function RootLayout({

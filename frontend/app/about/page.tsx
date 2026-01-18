@@ -34,16 +34,19 @@ export default function AboutPage() {
             className="text-xl font-bold mb-4 gradient-text"
             style={{ fontFamily: styles.fontFamily }}
           >
-            About This Project
+            About Diving Coach
           </h2>
-          <p style={{ color: styles.textSecondary, lineHeight: "1.75" }}>
-            This project was built as part of The AI Engineer Challenge — a
-            hands-on demonstration of front-end engineering, design systems, and
-            intelligent UI integration. It connects to a custom LLM API,
-            delivering an interactive chat experience with analytics, presets,
-            and personalized themes. The goal: show how a polished, responsive,
-            and data-aware interface can make working with AI both fast and
-            practical.
+          <p style={{ color: styles.textSecondary, lineHeight: "1.75", marginBottom: "1rem" }}>
+            Diving Coach is an AI-powered educational assistant designed to help divers 
+            understand the principles, safety considerations, and training structures for 
+            both scuba diving and freediving. Built as part of The AI Engineer Challenge, 
+            this project demonstrates how intelligent interfaces can support learning in 
+            specialized domains.
+          </p>
+          <p style={{ color: styles.textSecondary, lineHeight: "1.75", fontStyle: "italic" }}>
+            <strong>Important:</strong> This tool is for educational purposes only. It does not 
+            replace professional diving instruction, medical advice, or certification courses. 
+            Always dive with proper training, certification, and a buddy.
           </p>
         </motion.section>
 
@@ -136,31 +139,31 @@ export default function AboutPage() {
           </h2>
           <ul className="space-y-3" style={{ color: styles.textSecondary }}>
             <li className="flex items-start gap-3">
-              <span className="text-xl">💬</span>
+              <span className="text-xl">🤿</span>
               <div>
-                <strong>Chat Interface with History</strong> – Interactive,
-                responsive, and persistent conversations.
+                <strong>Diving-Specific Knowledge Base</strong> – Covers scuba fundamentals, 
+                freediving techniques, safety protocols, and physiology.
               </div>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-xl">📊</span>
+              <span className="text-xl">🛟</span>
               <div>
-                <strong>Metrics Dashboard</strong> – Displays average response
-                time, word count, and sentiment trend.
+                <strong>Safety-First Approach</strong> – Emphasizes risk management, proper 
+                training, and responsible diving practices.
               </div>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-xl">🎯</span>
               <div>
-                <strong>Preset Prompts</strong> – Quick-start prompts organized
-                by category for faster interactions.
+                <strong>Topic-Organized Prompts</strong> – Quick access to common questions 
+                about training, equipment, physiology, and safety.
               </div>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-xl">⚙️</span>
+              <span className="text-xl">💬</span>
               <div>
-                <strong>Settings with LocalStorage Persistence</strong> – Saves
-                user preferences and session data automatically.
+                <strong>Interactive Learning</strong> – Persistent chat history lets you 
+                build knowledge progressively across sessions.
               </div>
             </li>
           </ul>
@@ -184,16 +187,16 @@ export default function AboutPage() {
             Future Enhancements
           </h2>
           <p style={{ color: styles.textSecondary, marginBottom: "0.75rem" }}>
-            Next iterations will include:
+            Future enhancements could include:
           </p>
           <ul
             className="list-disc list-inside space-y-2"
             style={{ color: styles.textSecondary }}
           >
-            <li>Real-time backend metrics with live charts.</li>
-            <li>Multi-modal input (voice + text).</li>
-            <li>Conversation export (Markdown / PDF).</li>
-            <li>User authentication and cloud-based session sync.</li>
+            <li>Integration with dive log data for personalized training recommendations.</li>
+            <li>Visual aids for equalization techniques and breathing exercises.</li>
+            <li>Progress tracking for breath-hold and skill development.</li>
+            <li>Community-reviewed content from certified instructors.</li>
           </ul>
         </motion.section>
 
