@@ -1,6 +1,7 @@
 import asyncio
 import time
-from loaders import TextFileLoader, CharacterTextSplitter, EmbeddingModel
+from loaders import TextFileLoader, CharacterTextSplitter
+from embeddings import EmbeddingModel
 
 print("=" * 60)
 print("TESTING TextFileLoader")
