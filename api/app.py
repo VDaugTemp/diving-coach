@@ -8,9 +8,21 @@ from pydantic import BaseModel
 from openai import OpenAI
 import os
 from typing import Optional
+from contextlib import asynccontextmanager
+
+# Import document ingestion
+from ingest import router as ingest_router, load_documents_from_data_folder, get_vector_store
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Load documents from data/ folder when the app starts."""
+    await load_documents_from_data_folder()
+    yield
+
 
 # Initialize FastAPI application with a title
-app = FastAPI(title="OpenAI Chat API")
+app = FastAPI(title="Diving Coach API", lifespan=lifespan)
 
 # Configure CORS (Cross-Origin Resource Sharing) middleware
 # This allows the API to be accessed from different domains/origins
@@ -21,6 +33,9 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allows all headers in requests
 )
+
+# Include document ingestion endpoints
+app.include_router(ingest_router)
 
 # Define the data model for chat requests using Pydantic
 # This ensures incoming request data is properly validated
@@ -38,16 +53,33 @@ async def chat(request: ChatRequest):
         if not api_key:
             raise HTTPException(status_code=500, detail="OPENAI_API_KEY environment variable is not set")
         
+        # RAG: Search vector database for relevant context
+        vector_store = get_vector_store()
+        search_results = await vector_store.search(request.user_message, top_k=3)
+        
+        # Format retrieved context into a readable string
+        context = ""
+        if search_results:
+            context = "Relevant information from diving manuals:\n\n"
+            for i, result in enumerate(search_results, 1):
+                context += f"[Source {i}: {result['metadata'].get('filename', 'Unknown')}]\n"
+                context += f"{result['text']}\n\n"
+        
+        # Add context to the system message
+        enhanced_system_message = request.developer_message
+        if context:
+            enhanced_system_message += f"\n\n{context}"
+        
         # Initialize OpenAI client with the API key from environment
         client = OpenAI(api_key=api_key)
         
         # Create an async generator function for streaming responses
         async def generate():
-            # Create a streaming chat completion request
+            # Create a streaming chat completion request with enhanced context
             stream = client.chat.completions.create(
                 model=request.model,
                 messages=[
-                    {"role": "developer", "content": request.developer_message},
+                    {"role": "developer", "content": enhanced_system_message},
                     {"role": "user", "content": request.user_message}
                 ],
                 stream=True  # Enable streaming response
