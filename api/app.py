@@ -12,6 +12,8 @@ from contextlib import asynccontextmanager
 
 # Import document ingestion
 from ingest import router as ingest_router, load_documents_from_data_folder, get_vector_store
+# Import prompt templates
+from prompts import PromptTemplates
 
 
 @asynccontextmanager
@@ -40,9 +42,9 @@ app.include_router(ingest_router)
 # Define the data model for chat requests using Pydantic
 # This ensures incoming request data is properly validated
 class ChatRequest(BaseModel):
-    developer_message: str  # Message from the developer/system
     user_message: str      # Message from the user
     model: Optional[str] = "gpt-4.1-mini"  # Optional model selection with default
+    template: Optional[str] = "default"  # Prompt template: default, beginner, advanced
 
 # Define the main chat endpoint that handles POST requests
 @app.post("/api/chat")
@@ -57,18 +59,13 @@ async def chat(request: ChatRequest):
         vector_store = get_vector_store()
         search_results = await vector_store.search(request.user_message, top_k=3)
         
-        # Format retrieved context into a readable string
-        context = ""
-        if search_results:
-            context = "Relevant information from diving manuals:\n\n"
-            for i, result in enumerate(search_results, 1):
-                context += f"[Source {i}: {result['metadata'].get('filename', 'Unknown')}]\n"
-                context += f"{result['text']}\n\n"
-        
-        # Add context to the system message
-        enhanced_system_message = request.developer_message
-        if context:
-            enhanced_system_message += f"\n\n{context}"
+        # Build prompt using templates
+        system_message, user_message = PromptTemplates.build_rag_prompt(
+            user_query=request.user_message,
+            search_results=search_results,
+            template=request.template,
+            max_sources=3
+        )
         
         # Initialize OpenAI client with the API key from environment
         client = OpenAI(api_key=api_key)
@@ -79,8 +76,8 @@ async def chat(request: ChatRequest):
             stream = client.chat.completions.create(
                 model=request.model,
                 messages=[
-                    {"role": "developer", "content": enhanced_system_message},
-                    {"role": "user", "content": request.user_message}
+                    {"role": "developer", "content": system_message},
+                    {"role": "user", "content": user_message}
                 ],
                 stream=True  # Enable streaming response
             )
