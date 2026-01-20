@@ -124,10 +124,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
 
     // Ensure we have a session before sending (create if needed)
     let activeSession = currentSession;
+    let shouldNavigate = false;
+    
     if (!activeSession) {
-      // If no session exists, create one and navigate to it
+      // If no session exists, create one but DON'T navigate yet
       activeSession = createSession();
-      router.push(`/?session=${activeSession.id}`);
+      shouldNavigate = true;
     }
     const targetSessionId = activeSession.id;
 
@@ -147,6 +149,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
     // Pulse send button animation
     setSendButtonPulse(true);
     setTimeout(() => setSendButtonPulse(false), 300);
+
+    // Navigate AFTER setting up the message state (if we created a new session)
+    if (shouldNavigate) {
+      // Use setTimeout to ensure navigation doesn't interrupt the async flow
+      setTimeout(() => {
+        router.push(`/?session=${targetSessionId}`);
+      }, 0);
+    }
 
     let assistantContent = "";
 

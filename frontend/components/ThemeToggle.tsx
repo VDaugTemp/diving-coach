@@ -5,7 +5,7 @@ import { useThemeStyles } from "@/hooks/useThemeStyles";
 import { motion } from "framer-motion";
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, mounted } = useTheme();
   const styles = useThemeStyles();
 
   const themeOptions: Array<{ mode: "light" | "hacker" | "designer"; icon: string; label: string }> = [
@@ -21,6 +21,16 @@ export default function ThemeToggle() {
     const nextIndex = (currentIndex + 1) % themeOptions.length;
     setTheme(themeOptions[nextIndex].mode);
   };
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <div 
+        className="p-2 rounded-lg"
+        style={{ width: '44px', height: '44px' }}
+      />
+    );
+  }
 
   return (
     <motion.button

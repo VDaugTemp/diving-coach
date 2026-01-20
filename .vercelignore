@@ -1,26 +1,15 @@
-# Virtual environments
-activate/
-.venv/
-venv/
-env/
+# Don't ignore these important folders
+!api/data
+!api/config
 
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# Ignore test files
+**/__pycache__
+**/*.pyc
+**/test_*.py
 
-# Development files
-*.ipynb
-.pytest_cache/
-.coverage
+# Ignore node_modules (frontend handles its own)
+node_modules/
 
-# Large data files
-*.csv
-*.parquet
-*.h5
-*.hdf5
-
-# Lock file - use requirements.txt instead to avoid installing dev dependencies
-uv.lock
-
+# Ignore environment files (will be set via Vercel dashboard)
+.env
+.env.local

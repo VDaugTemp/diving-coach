@@ -8,6 +8,7 @@ export type { ThemeMode };
 interface ThemeContextType {
   theme: ThemeMode;
   setTheme: (theme: ThemeMode) => void;
+  mounted: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -78,7 +79,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Always provide the context, even before mounting
   // This prevents "useTheme must be used within a ThemeProvider" errors
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, mounted }}>
       {children}
     </ThemeContext.Provider>
   );

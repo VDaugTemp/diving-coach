@@ -5,10 +5,17 @@ from pydantic import BaseModel
 from typing import Optional
 from pathlib import Path
 import json
+import os
 
 from .loaders import TextFileLoader, CharacterTextSplitter
 from .vector_store import VectorStore
 from .web_loader import load_articles_from_urls
+
+
+# Get absolute path to the api directory
+API_DIR = Path(__file__).parent.absolute()
+DATA_DIR = API_DIR / "data"
+CONFIG_DIR = API_DIR / "config"
 
 
 vector_store = VectorStore()
@@ -35,13 +42,20 @@ async def load_documents_from_data_folder():
         # =========================================================================
         # STEP 1: Load local files
         # =========================================================================
-        print("📚 Loading local documents from data/ folder...")
+        print(f"📚 Loading local documents from {DATA_DIR}...")
+        print(f"   API_DIR: {API_DIR}")
+        print(f"   DATA_DIR exists: {DATA_DIR.exists()}")
         
-        loader = TextFileLoader("data")
+        if not DATA_DIR.exists():
+            print(f"❌ ERROR: Data directory does not exist at {DATA_DIR}")
+            return
+        
+        loader = TextFileLoader(str(DATA_DIR))
         documents = loader.load()
         
         if not documents:
-            print("⚠️  No local documents found in data/ folder")
+            print(f"⚠️  No local documents found in {DATA_DIR}")
+            print(f"   Files in directory: {list(DATA_DIR.iterdir()) if DATA_DIR.exists() else 'N/A'}")
             return
         
         print(f"✅ Loaded {len(documents)} local documents")
@@ -52,8 +66,7 @@ async def load_documents_from_data_folder():
         print(f"✂️  Split into {len(chunks)} chunks")
         
         # Build metadata for local files
-        data_path = Path("data")
-        files = list(data_path.glob("*.txt")) + list(data_path.glob("*.pdf"))
+        files = list(DATA_DIR.glob("*.txt")) + list(DATA_DIR.glob("*.pdf"))
         
         metadata_list = []
         for file in files:
@@ -76,9 +89,12 @@ async def load_documents_from_data_folder():
         print("\n🌐 Loading web articles...")
         
         # Read web sources from config
-        config_path = Path("config/web_sources.json")
+        config_path = CONFIG_DIR / "web_sources.json"
         web_chunks = []
         web_metadata = []
+        
+        print(f"   CONFIG_DIR: {CONFIG_DIR}")
+        print(f"   Config file exists: {config_path.exists()}")
         
         if config_path.exists():
             try:

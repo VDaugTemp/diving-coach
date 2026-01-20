@@ -101,14 +101,22 @@ async def chat(request: ChatRequest):
         
         # RAG: Search vector database for relevant context
         vector_store = get_vector_store()
+        
+        # Check if vector store has documents
+        stats = vector_store.get_stats()
+        if stats["num_documents"] == 0:
+            print("⚠️  WARNING: Vector store is empty! No documents loaded.")
+            print("   This might be a deployment issue - check if data/ folder is accessible")
+        
         search_results = await vector_store.search(
             request.user_message, 
             top_k=3,
             similarity_method=request.similarity_method
         )
         
-        # Track RAG statistics
-        update_rag_stats(search_results, request.similarity_method)
+        # Track RAG statistics (only if we have results)
+        if search_results:
+            update_rag_stats(search_results, request.similarity_method)
         
         # Build prompt using templates
         system_message, user_message = PromptTemplates.build_rag_prompt(
@@ -149,6 +157,46 @@ async def chat(request: ChatRequest):
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok"}
+
+# Define a debug endpoint to diagnose deployment issues
+@app.get("/api/debug")
+async def debug_info():
+    """Debug endpoint to check if files and data are accessible."""
+    import sys
+    from pathlib import Path
+    
+    # Get paths
+    api_dir = Path(__file__).parent.absolute()
+    data_dir = api_dir / "data"
+    config_dir = api_dir / "config"
+    
+    # Get vector store stats
+    vector_store = get_vector_store()
+    vs_stats = vector_store.get_stats()
+    
+    debug_data = {
+        "python_version": sys.version,
+        "current_working_directory": str(Path.cwd()),
+        "api_directory": str(api_dir),
+        "data_directory": {
+            "path": str(data_dir),
+            "exists": data_dir.exists(),
+            "is_dir": data_dir.is_dir() if data_dir.exists() else False,
+            "files": [f.name for f in data_dir.iterdir()] if data_dir.exists() and data_dir.is_dir() else []
+        },
+        "config_directory": {
+            "path": str(config_dir),
+            "exists": config_dir.exists(),
+            "is_dir": config_dir.is_dir() if config_dir.exists() else False,
+            "files": [f.name for f in config_dir.iterdir()] if config_dir.exists() and config_dir.is_dir() else []
+        },
+        "vector_store": vs_stats,
+        "environment_variables": {
+            "OPENAI_API_KEY": "set" if os.getenv("OPENAI_API_KEY") else "not set"
+        }
+    }
+    
+    return debug_data
 
 # Define RAG statistics endpoint
 @app.get("/api/rag-stats")
