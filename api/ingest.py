@@ -6,9 +6,9 @@ from typing import Optional
 from pathlib import Path
 import json
 
-from loaders import TextFileLoader, CharacterTextSplitter
-from vector_store import VectorStore
-from web_loader import load_articles_from_urls
+from .loaders import TextFileLoader, CharacterTextSplitter
+from .vector_store import VectorStore
+from .web_loader import load_articles_from_urls
 
 
 vector_store = VectorStore()

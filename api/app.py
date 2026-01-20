@@ -13,9 +13,9 @@ from collections import defaultdict
 from datetime import datetime
 
 # Import document ingestion
-from ingest import router as ingest_router, load_documents_from_data_folder, get_vector_store
+from .ingest import router as ingest_router, load_documents_from_data_folder, get_vector_store
 # Import prompt templates
-from prompts import PromptTemplates
+from .prompts import PromptTemplates
 
 
 @asynccontextmanager

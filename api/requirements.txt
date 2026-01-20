@@ -71,7 +71,7 @@ beautifulsoup4==4.12.3
     # for parsing HTML content
 trafilatura==1.8.0
     # for extracting clean article content from web pages
-PyPDF2==3.0.1
+pypdf==5.1.0
     # for PDF processing
 numpy==2.2.1
     # for vector operations

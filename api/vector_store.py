@@ -2,8 +2,8 @@
 
 import numpy as np
 from typing import List, Dict, Optional, Any, Literal
-from embeddings import EmbeddingModel
-from similarity import cosine_similarity_batch, euclidean_similarity_batch
+from .embeddings import EmbeddingModel
+from .similarity import cosine_similarity_batch, euclidean_similarity_batch
 
 
 class VectorStore:    
