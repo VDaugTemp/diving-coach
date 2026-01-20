@@ -24,6 +24,7 @@ export interface ChatRequest {
   user_message: string;
   model?: string;
   template?: "default" | "beginner" | "advanced";
+  similarity_method?: "cosine" | "euclidean";
 }
 
 /**

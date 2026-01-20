@@ -1,9 +1,9 @@
 """Vector Store Module - In-memory vector database for semantic search."""
 
 import numpy as np
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Literal
 from embeddings import EmbeddingModel
-from similarity import cosine_similarity_batch
+from similarity import cosine_similarity_batch, euclidean_similarity_batch
 
 
 class VectorStore:    
@@ -84,15 +84,35 @@ class VectorStore:
     async def search(
         self, 
         query: str, 
-        top_k: int = 5
+        top_k: int = 5,
+        similarity_method: Literal["cosine", "euclidean"] = "cosine"
     ) -> List[Dict[str, Any]]:
+        """
+        Search for similar documents using the specified similarity measure.
+        
+        Args:
+            query: Search query text
+            top_k: Number of top results to return
+            similarity_method: Either "cosine" or "euclidean"
+                - cosine: Measures angle between vectors (range 0-1, higher is better)
+                - euclidean: Measures distance between vectors (converted to similarity 0-1, higher is better)
+        
+        Returns:
+            List of dictionaries with 'text', 'score', and 'metadata'
+        """
         if not self.documents or self.embeddings is None:
             return []
         
         query_embedding = await self.embedding_model.get_embedding(query)
         query_vector = np.array(query_embedding)
 
-        similarities = cosine_similarity_batch(query_vector, self.embeddings)
+        # Calculate similarities based on chosen method
+        if similarity_method == "euclidean":
+            # Euclidean similarity (higher is better, range 0-1)
+            similarities = euclidean_similarity_batch(query_vector, self.embeddings)
+        else:
+            # Cosine similarity (higher is better, range 0-1)
+            similarities = cosine_similarity_batch(query_vector, self.embeddings)
 
         top_k = min(top_k, len(self.documents))
         top_k_indices = np.argsort(similarities)[-top_k:][::-1]
@@ -102,7 +122,10 @@ class VectorStore:
             results.append({
                 "text": self.documents[idx],
                 "score": float(similarities[idx]),
-                "metadata": self.metadata[idx]
+                "metadata": {
+                    **self.metadata[idx],
+                    "similarity_method": similarity_method  # Include method in metadata
+                }
             })
         
         return results

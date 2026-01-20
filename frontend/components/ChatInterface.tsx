@@ -35,6 +35,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<"default" | "beginner" | "advanced">("default");
+  const [similarityMethod, setSimilarityMethod] = useState<"cosine" | "euclidean">("cosine");
   
   const hasMessages = currentSession && currentSession.messages.length > 0;
 
@@ -153,6 +154,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
       {
         user_message: messageContent.trim(),
         template: selectedTemplate,
+        similarity_method: similarityMethod,
       },
       (chunk) => {
         assistantContent += chunk;
@@ -372,27 +374,60 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
         }}
       >
         {/* Template Selector */}
-        <div className="mb-3 flex gap-2 items-center">
-          <span className="text-sm" style={{ color: styles.textSecondary }}>
-            Instructor Mode:
-          </span>
-          <div className="flex gap-2">
-            {(['default', 'beginner', 'advanced'] as const).map((template) => (
-              <button
-                key={template}
-                onClick={() => setSelectedTemplate(template)}
-                className={`px-3 py-1 rounded-lg text-sm transition-all ${
-                  selectedTemplate === template ? 'font-semibold' : ''
-                }`}
-                style={{
-                  backgroundColor: selectedTemplate === template ? styles.primary : styles.inputBg,
-                  color: selectedTemplate === template ? styles.buttonText : styles.text,
-                  border: `1px solid ${selectedTemplate === template ? styles.primary : styles.border}`,
-                }}
-              >
-                {template.charAt(0).toUpperCase() + template.slice(1)}
-              </button>
-            ))}
+        <div className="mb-3 flex flex-col gap-2">
+          {/* Instructor Mode Selector */}
+          <div className="flex gap-2 items-center">
+            <span className="text-sm" style={{ color: styles.textSecondary }}>
+              Instructor Mode:
+            </span>
+            <div className="flex gap-2">
+              {(['default', 'beginner', 'advanced'] as const).map((template) => (
+                <button
+                  key={template}
+                  onClick={() => setSelectedTemplate(template)}
+                  className={`px-3 py-1 rounded-lg text-sm transition-all ${
+                    selectedTemplate === template ? 'font-semibold' : ''
+                  }`}
+                  style={{
+                    backgroundColor: selectedTemplate === template ? styles.primary : styles.inputBg,
+                    color: selectedTemplate === template ? styles.buttonText : styles.text,
+                    border: `1px solid ${selectedTemplate === template ? styles.primary : styles.border}`,
+                  }}
+                >
+                  {template.charAt(0).toUpperCase() + template.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Similarity Method Selector */}
+          <div className="flex gap-2 items-center">
+            <span className="text-sm" style={{ color: styles.textSecondary }}>
+              Search Method:
+            </span>
+            <div className="flex gap-2">
+              {(['cosine', 'euclidean'] as const).map((method) => (
+                <button
+                  key={method}
+                  onClick={() => setSimilarityMethod(method)}
+                  className={`px-3 py-1 rounded-lg text-sm transition-all ${
+                    similarityMethod === method ? 'font-semibold' : ''
+                  }`}
+                  style={{
+                    backgroundColor: similarityMethod === method ? styles.primary : styles.inputBg,
+                    color: similarityMethod === method ? styles.buttonText : styles.text,
+                    border: `1px solid ${similarityMethod === method ? styles.primary : styles.border}`,
+                  }}
+                  title={
+                    method === 'cosine' 
+                      ? 'Cosine Similarity: Measures angle between vectors (recommended for text)' 
+                      : 'Euclidean Similarity: Measures distance between vectors (experimental)'
+                  }
+                >
+                  {method.charAt(0).toUpperCase() + method.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="flex gap-2">

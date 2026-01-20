@@ -45,6 +45,7 @@ class ChatRequest(BaseModel):
     user_message: str      # Message from the user
     model: Optional[str] = "gpt-4.1-mini"  # Optional model selection with default
     template: Optional[str] = "default"  # Prompt template: default, beginner, advanced
+    similarity_method: Optional[str] = "cosine"  # Similarity measure: cosine or euclidean
 
 # Define the main chat endpoint that handles POST requests
 @app.post("/api/chat")
@@ -57,7 +58,11 @@ async def chat(request: ChatRequest):
         
         # RAG: Search vector database for relevant context
         vector_store = get_vector_store()
-        search_results = await vector_store.search(request.user_message, top_k=3)
+        search_results = await vector_store.search(
+            request.user_message, 
+            top_k=3,
+            similarity_method=request.similarity_method
+        )
         
         # Build prompt using templates
         system_message, user_message = PromptTemplates.build_rag_prompt(
