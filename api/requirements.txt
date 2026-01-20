@@ -67,3 +67,13 @@ uvicorn==0.38.0
     # via beyond-chatgpt (pyproject.toml)
 requests==2.31.0
     # for testing API endpoints
+beautifulsoup4==4.12.3
+    # for parsing HTML content
+trafilatura==1.8.0
+    # for extracting clean article content from web pages
+PyPDF2==3.0.1
+    # for PDF processing
+numpy==2.2.1
+    # for vector operations
+python-dotenv==1.0.1
+    # for environment variables

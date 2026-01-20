@@ -1,12 +1,14 @@
-"""Document ingestion - loads local files from data/ folder."""
+"""Document ingestion - loads local files and web articles."""
 
 from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from pathlib import Path
+import json
 
 from loaders import TextFileLoader, CharacterTextSplitter
 from vector_store import VectorStore
+from web_loader import load_articles_from_urls
 
 
 vector_store = VectorStore()
@@ -23,30 +25,33 @@ class StatsResponse(BaseModel):
 
 
 async def load_documents_from_data_folder():
-    """Load all documents from data/ folder at startup."""
+    """Load all documents from data/ folder and web sources at startup."""
     global _ingestion_complete
     
     if _ingestion_complete:
         return
     
-    print("📚 Loading documents from data/ folder...")
-    
     try:
+        # =========================================================================
+        # STEP 1: Load local files
+        # =========================================================================
+        print("📚 Loading local documents from data/ folder...")
+        
         loader = TextFileLoader("data")
         documents = loader.load()
         
         if not documents:
-            print("⚠️  No documents found in data/ folder")
+            print("⚠️  No local documents found in data/ folder")
             return
         
-        print(f"✅ Loaded {len(documents)} documents")
+        print(f"✅ Loaded {len(documents)} local documents")
         
         splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         chunks = splitter.split_documents(documents)
         
         print(f"✂️  Split into {len(chunks)} chunks")
-        print("🔄 Generating embeddings (this may take a minute)...")
         
+        # Build metadata for local files
         data_path = Path("data")
         files = list(data_path.glob("*.txt")) + list(data_path.glob("*.pdf"))
         
@@ -61,13 +66,72 @@ async def load_documents_from_data_folder():
                 metadata_list.append({
                     "filename": file.name,
                     "source": str(file),
-                    "chunk_index": i
+                    "chunk_index": i,
+                    "source_type": "local_file"
                 })
         
-        await vector_store.add_documents(chunks, metadata_list)
+        # =========================================================================
+        # STEP 2: Load web articles
+        # =========================================================================
+        print("\n🌐 Loading web articles...")
+        
+        # Read web sources from config
+        config_path = Path("config/web_sources.json")
+        web_chunks = []
+        web_metadata = []
+        
+        if config_path.exists():
+            try:
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                    urls = config.get('urls', [])
+                
+                if urls:
+                    print(f"📋 Found {len(urls)} URL(s) to fetch")
+                    
+                    # Load articles
+                    web_docs = load_articles_from_urls(urls)
+                    
+                    if web_docs:
+                        print(f"✅ Loaded {len(web_docs)} web article(s)")
+                        
+                        # Chunk web articles
+                        for web_doc in web_docs:
+                            doc_chunks = splitter.split_text(web_doc['text'])
+                            
+                            for i, chunk in enumerate(doc_chunks):
+                                web_chunks.append(chunk)
+                                web_metadata.append({
+                                    **web_doc['metadata'],
+                                    'chunk_index': i,
+                                    'total_chunks': len(doc_chunks)
+                                })
+                        
+                        print(f"✂️  Created {len(web_chunks)} chunks from web articles")
+                else:
+                    print("ℹ️  No URLs configured in web_sources.json")
+            
+            except Exception as e:
+                print(f"⚠️  Warning: Could not load web articles: {e}")
+                print("   (Continuing with local documents only)")
+        else:
+            print("ℹ️  No web sources config found (config/web_sources.json)")
+        
+        # =========================================================================
+        # STEP 3: Combine and add to vector store
+        # =========================================================================
+        print(f"\n🔄 Generating embeddings...")
+        
+        all_chunks = chunks + web_chunks
+        all_metadata = metadata_list + web_metadata
+        
+        await vector_store.add_documents(all_chunks, all_metadata)
         
         stats = vector_store.get_stats()
-        print(f"✅ Ingestion complete: {stats['num_documents']} chunks stored")
+        print(f"\n✅ Ingestion complete!")
+        print(f"   - Local chunks: {len(chunks)}")
+        print(f"   - Web chunks: {len(web_chunks)}")
+        print(f"   - Total: {stats['num_documents']} chunks stored")
         
         _ingestion_complete = True
         
