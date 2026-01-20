@@ -31,7 +31,7 @@ This application brings together the power of OpenAI's GPT models with a beautif
 
 ## 🌐 Live Demo
 
-**Check out the live application:** [https://challenge-kzpvc7da8-vdaugs-projects.vercel.app/](https://challenge-kzpvc7da8-vdaugs-projects.vercel.app/)
+**Check out the live application:** [https://diving-coach-m9go94cd2-vdaugs-projects.vercel.app/](https://diving-coach-m9go94cd2-vdaugs-projects.vercel.app/)
 
 > 💡 **Pro Tip:** Open the demo in an incognito window to see it as a first-time visitor!
 
