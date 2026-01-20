@@ -21,9 +21,9 @@ const getApiBaseUrl = (): string => {
 };
 
 export interface ChatRequest {
-  developer_message: string;
   user_message: string;
   model?: string;
+  template?: "default" | "beginner" | "advanced";
 }
 
 /**

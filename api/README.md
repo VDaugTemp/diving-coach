@@ -1,83 +1,69 @@
-# OpenAI Chat API Backend
+# Diving Coach API
 
-This is a FastAPI-based backend service that provides a streaming chat interface using OpenAI's API.
-
-## Prerequisites
-
-- [`uv`](https://github.com/astral-sh/uv) package manager (`pip install uv`)
-- `uv` will provision Python 3.11 automatically for this project, so no separate interpreter installation is required
-- An OpenAI API key available as the `OPENAI_API_KEY` environment variable when you run the server
+FastAPI backend for diving instruction with RAG (Retrieval Augmented Generation).
 
 ## Setup
 
-All commands below assume you are running them from the repository root.
-
-1. Install dependencies into a local virtual environment managed by `uv`:
-
 ```bash
-uv sync
+pip install openai fastapi uvicorn pypdf python-multipart numpy
+export OPENAI_API_KEY="your-key-here"
 ```
 
-2. (Optional) Activate the virtual environment if you prefer to run commands manually:
+## Run
 
 ```bash
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python app.py
 ```
 
-`uv` will create the `.venv` directory automatically on first sync and download Python 3.11 if it's not already available.
+Server starts at `http://localhost:8000`
 
-## Running the Server
-
-Start the FastAPI app with the dependencies managed by `uv`:
-
-```bash
-uv run python api/app.py
-```
-
-This runs the app with `uvicorn` on `http://localhost:8000`. To enable autoreload during development, use:
-
-```bash
-uv run uvicorn api.app:app --reload
-```
-
-Both commands assume the `OPENAI_API_KEY` environment variable is set in the shell that launches the server.
+Documents from `data/` folder are automatically loaded at startup.
 
 ## API Endpoints
 
-### Chat Endpoint
-- **URL**: `/api/chat`
-- **Method**: POST
-- **Request Body**:
-```json
-{
-    "developer_message": "string",
-    "user_message": "string",
-    "model": "gpt-4.1-mini"  // optional
-}
+- `POST /api/chat` - Chat with streaming response
+- `GET /api/health` - Health check
+- `GET /api/ingest/stats` - Vector store statistics
+- `POST /api/ingest/reload` - Reload documents from data/
+
+## Project Structure
+
 ```
-- **Response**: Streaming text response
-- **Note**: The OpenAI API key must be set as the `OPENAI_API_KEY` environment variable on the server
+api/
+├── app.py              # Main FastAPI application
+├── ingest.py           # Document loading and ingestion
+├── vector_store.py     # In-memory vector database
+├── embeddings.py       # OpenAI embeddings
+├── similarity.py       # Cosine similarity calculations
+├── loaders.py          # Text/PDF loaders and chunking
+├── test_vector_store.py # Tests
+├── ingest_data.py      # Utility script for testing
+└── data/               # Diving manuals (PDFs/TXT)
+```
 
-### Health Check
-- **URL**: `/api/health`
-- **Method**: GET
-- **Response**: `{"status": "ok"}`
+## Testing
 
-## API Documentation
+```bash
+# Test vector store
+python test_vector_store.py
 
-Once the server is running, you can access the interactive API documentation at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+# Test document ingestion
+python ingest_data.py
+```
 
-## CORS Configuration
+## How It Works
 
-The API is configured to accept requests from any origin (`*`). This can be modified in the `app.py` file if you need to restrict access to specific domains.
+1. **Startup**: Loads all `.txt` and `.pdf` files from `data/` folder
+2. **Chunking**: Splits documents into 1000-char chunks (200 overlap)
+3. **Embeddings**: Generates vectors using OpenAI's text-embedding-3-small
+4. **Storage**: Stores in in-memory vector database (687 chunks from 6 manuals)
+5. **Search**: Cosine similarity for semantic search (coming in Phase 5)
 
-## Error Handling
+## Current Status
 
-The API includes basic error handling for:
-- Invalid API keys
-- OpenAI API errors
-- General server errors
-
-All errors will return a 500 status code with an error message. 
+✅ Document ingestion (Phase 4)
+✅ Vector storage with semantic search
+✅ Chat endpoint with streaming
+✅ RAG integration (Step 10)
+✅ Prompt templates (Step 11)
+🎯 Ready for production testing

@@ -34,6 +34,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<"default" | "beginner" | "advanced">("default");
   
   const hasMessages = currentSession && currentSession.messages.length > 0;
 
@@ -150,8 +151,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
 
     await streamChat(
       {
-        developer_message: "You are a knowledgeable diving coach specializing in scuba diving and freediving education. Your role is to explain diving principles, safety considerations, training methods, and equipment knowledge in a clear, professional, and safety-conscious manner. Always emphasize that your guidance is educational only and cannot replace professional instruction, medical advice, or certification courses. Encourage safe diving practices including proper training, buddy diving, and respecting personal limits.",
         user_message: messageContent.trim(),
+        template: selectedTemplate,
       },
       (chunk) => {
         assistantContent += chunk;
@@ -370,6 +371,30 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(
           borderColor: styles.border,
         }}
       >
+        {/* Template Selector */}
+        <div className="mb-3 flex gap-2 items-center">
+          <span className="text-sm" style={{ color: styles.textSecondary }}>
+            Instructor Mode:
+          </span>
+          <div className="flex gap-2">
+            {(['default', 'beginner', 'advanced'] as const).map((template) => (
+              <button
+                key={template}
+                onClick={() => setSelectedTemplate(template)}
+                className={`px-3 py-1 rounded-lg text-sm transition-all ${
+                  selectedTemplate === template ? 'font-semibold' : ''
+                }`}
+                style={{
+                  backgroundColor: selectedTemplate === template ? styles.primary : styles.inputBg,
+                  color: selectedTemplate === template ? styles.buttonText : styles.text,
+                  border: `1px solid ${selectedTemplate === template ? styles.primary : styles.border}`,
+                }}
+              >
+                {template.charAt(0).toUpperCase() + template.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex gap-2">
           <div className="flex-1 relative">
             <textarea
