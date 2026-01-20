@@ -87,6 +87,9 @@ export default function AboutPage() {
                   Tailwind CSS
                 </span>
                 <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                  Framer Motion
+                </span>
+                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                   Recharts
                 </span>
               </div>
@@ -112,8 +115,51 @@ export default function AboutPage() {
                 <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
                   Pydantic
                 </span>
-                <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                  Vercel / Render
+              </div>
+            </div>
+
+            <div>
+              <h3
+                className="text-lg font-semibold mb-2"
+                style={{ color: styles.text }}
+              >
+                RAG & Knowledge Base
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                  Vector Search
+                </span>
+                <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                  OpenAI Embeddings
+                </span>
+                <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                  NumPy
+                </span>
+                <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                  AIDA Manuals (PDF)
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <h3
+                className="text-lg font-semibold mb-2"
+                style={{ color: styles.text }}
+              >
+                Web Scraping & Content
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
+                  Trafilatura
+                </span>
+                <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
+                  BeautifulSoup4
+                </span>
+                <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
+                  PyPDF2
+                </span>
+                <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">
+                  Requests
                 </span>
               </div>
             </div>
@@ -139,24 +185,39 @@ export default function AboutPage() {
           </h2>
           <ul className="space-y-3" style={{ color: styles.textSecondary }}>
             <li className="flex items-start gap-3">
-              <span className="text-xl">🤿</span>
+              <span className="text-xl">🧠</span>
               <div>
-                <strong>Diving-Specific Knowledge Base</strong> – Covers scuba fundamentals, 
-                freediving techniques, safety protocols, and physiology.
+                <strong>RAG-Powered Responses</strong> – Uses Retrieval Augmented Generation 
+                to search official AIDA manuals and web articles, providing contextually relevant, 
+                source-cited answers.
               </div>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-xl">🛟</span>
+              <span className="text-xl">🌐</span>
               <div>
-                <strong>Safety-First Approach</strong> – Emphasizes risk management, proper 
-                training, and responsible diving practices.
+                <strong>Hybrid Knowledge Base</strong> – Combines local AIDA training manuals 
+                with live web articles (SSI, DeeperBlue) for up-to-date diving information.
               </div>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-xl">🎯</span>
+              <span className="text-xl">🎓</span>
               <div>
-                <strong>Topic-Organized Prompts</strong> – Quick access to common questions 
-                about training, equipment, physiology, and safety.
+                <strong>Adaptive Learning Modes</strong> – Choose between Default, Beginner, 
+                or Advanced instructor modes tailored to your skill level.
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-xl">🔍</span>
+              <div>
+                <strong>Semantic Search</strong> – Toggle between Cosine and Euclidean 
+                similarity measures to see how different algorithms retrieve information.
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-xl">📊</span>
+              <div>
+                <strong>RAG Metrics Dashboard</strong> – Visualize vector embeddings, 
+                search performance, and knowledge base statistics in real-time.
               </div>
             </li>
             <li className="flex items-start gap-3">
@@ -184,20 +245,104 @@ export default function AboutPage() {
             className="text-xl font-bold mb-4 gradient-text"
             style={{ fontFamily: styles.fontFamily }}
           >
-            Future Enhancements
+            Future: AI Dive Agent 🤖
           </h2>
-          <p style={{ color: styles.textSecondary, marginBottom: "0.75rem" }}>
-            Future enhancements could include:
+          <p style={{ color: styles.textSecondary, marginBottom: "1rem", lineHeight: "1.75" }}>
+            The next evolution is transforming Diving Coach into an <strong>intelligent dive planning 
+            and tracking agent</strong> that goes beyond answering questions to actively helping you 
+            plan, log, and optimize your diving experiences.
           </p>
-          <ul
-            className="list-disc list-inside space-y-2"
-            style={{ color: styles.textSecondary }}
+          
+          <div className="space-y-4">
+            <div>
+              <h3
+                className="text-md font-semibold mb-2 flex items-center gap-2"
+                style={{ color: styles.text }}
+              >
+                <span className="text-xl">📍</span>
+                Dive Planning Agent
+              </h3>
+              <ul
+                className="list-disc list-inside space-y-1 ml-6"
+                style={{ color: styles.textSecondary, fontSize: "0.95rem" }}
+              >
+                <li>Fetch real-time tide data for dive site recommendations</li>
+                <li>Pull weather forecasts and water conditions</li>
+                <li>Suggest optimal dive windows based on conditions</li>
+                <li>Calculate surface intervals and no-decompression limits</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3
+                className="text-md font-semibold mb-2 flex items-center gap-2"
+                style={{ color: styles.text }}
+              >
+                <span className="text-xl">📖</span>
+                Dive Log & Analytics
+              </h3>
+              <ul
+                className="list-disc list-inside space-y-1 ml-6"
+                style={{ color: styles.textSecondary, fontSize: "0.95rem" }}
+              >
+                <li>Track your dive history with depth, time, and conditions</li>
+                <li>Analyze progression in skills and breath-hold capacity</li>
+                <li>Personalized training recommendations based on your logs</li>
+                <li>Visualize diving statistics and achievements</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3
+                className="text-md font-semibold mb-2 flex items-center gap-2"
+                style={{ color: styles.text }}
+              >
+                <span className="text-xl">🌊</span>
+                Environmental Integration
+              </h3>
+              <ul
+                className="list-disc list-inside space-y-1 ml-6"
+                style={{ color: styles.textSecondary, fontSize: "0.95rem" }}
+              >
+                <li>Marine life sighting predictions based on season and location</li>
+                <li>Water temperature and visibility forecasts</li>
+                <li>Current strength and direction advisories</li>
+                <li>Local dive site database with community reviews</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3
+                className="text-md font-semibold mb-2 flex items-center gap-2"
+                style={{ color: styles.text }}
+              >
+                <span className="text-xl">🎯</span>
+                Smart Training Coach
+              </h3>
+              <ul
+                className="list-disc list-inside space-y-1 ml-6"
+                style={{ color: styles.textSecondary, fontSize: "0.95rem" }}
+              >
+                <li>Adaptive training plans based on your goals and progress</li>
+                <li>Breath-hold table generation (CO2 and O2 tables)</li>
+                <li>Technique improvement suggestions from dive log analysis</li>
+                <li>Integration with certification requirements (AIDA, PADI, SSI)</li>
+              </ul>
+            </div>
+          </div>
+
+          <p 
+            style={{ 
+              color: styles.textSecondary, 
+              marginTop: "1rem", 
+              fontStyle: "italic",
+              fontSize: "0.9rem" 
+            }}
           >
-            <li>Integration with dive log data for personalized training recommendations.</li>
-            <li>Visual aids for equalization techniques and breathing exercises.</li>
-            <li>Progress tracking for breath-hold and skill development.</li>
-            <li>Community-reviewed content from certified instructors.</li>
-          </ul>
+            💡 <strong>Vision:</strong> An AI agent that doesn't just educate, but actively participates 
+            in your diving journey—planning dives, tracking progress, and ensuring safety through 
+            intelligent, data-driven recommendations.
+          </p>
         </motion.section>
 
         {/* About the Developer */}
@@ -252,7 +397,7 @@ export default function AboutPage() {
               <span>→</span>
             </motion.a>
             <motion.a
-              href="https://github.com/VDaugTemp/challenge#"
+              href="https://github.com/VDaugTemp/diving-coach#"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-white"
