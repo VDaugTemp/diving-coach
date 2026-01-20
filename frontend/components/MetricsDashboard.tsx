@@ -3,12 +3,15 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useMetrics } from "@/hooks/useMetrics";
+import { useRAGStats } from "@/hooks/useRAGStats";
 import { useThemeStyles } from "@/hooks/useThemeStyles";
 import {
   LineChart,
   Line,
   BarChart,
   Bar,
+  PieChart,
+  Pie,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -130,6 +133,7 @@ const CustomTooltip = ({
 
 export default function MetricsDashboard() {
   const { metrics, loading } = useMetrics();
+  const { ragStats, loading: ragLoading } = useRAGStats();
   const styles = useThemeStyles();
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
@@ -358,7 +362,6 @@ export default function MetricsDashboard() {
               >
                 <AnimatedNumber
                   value={metric.value}
-                  suffix={metric.suffix}
                   duration={0.8}
                 />
               </p>
@@ -563,6 +566,283 @@ export default function MetricsDashboard() {
           </div>
         </motion.div>
       </motion.div>
+
+      {/* RAG System Statistics Section */}
+      {ragStats && !ragLoading && (
+        <>
+          {/* Animated Divider */}
+          <AnimatedDivider color={styles.border} />
+
+          {/* RAG Stats Header */}
+          <motion.h3
+            className="text-xl font-bold tracking-tight uppercase gradient-text mb-6 mt-8"
+            style={{
+              fontFamily: styles.fontFamily,
+              letterSpacing: "0.05em",
+              fontWeight: 700,
+            }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            RAG System Statistics
+          </motion.h3>
+
+          {/* Vector Store & Retrieval Quality Cards */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {[
+              { label: "Documents in Store", value: ragStats.vector_store.num_documents, suffix: "" },
+              { label: "Total Queries", value: ragStats.total_queries, suffix: "" },
+              { label: "Avg Relevance Score", value: Math.round(ragStats.avg_relevance_score * 100), suffix: "%" },
+              { label: "Avg Docs/Query", value: ragStats.avg_documents_per_query.toFixed(1), suffix: "" },
+            ].map((metric, index) => {
+              const cardColors = getCardColors(index);
+              return (
+                <motion.div
+                  key={metric.label}
+                  variants={cardVariants}
+                  className="p-6 rounded-xl border relative overflow-hidden"
+                  style={{
+                    backgroundColor: cardColors.bg,
+                    borderColor: styles.border,
+                    backdropFilter: "blur(10px)",
+                    boxShadow: `0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
+                  }}
+                  whileHover={{
+                    y: -4,
+                    boxShadow: `0 8px 24px ${cardColors.glow}, 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
+                    transition: { duration: 0.2 },
+                  }}
+                >
+                  {/* Subtle gradient overlay */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "2px",
+                      background: `linear-gradient(90deg, transparent, ${cardColors.value}, transparent)`,
+                      opacity: 0.5,
+                    }}
+                  />
+                  <p
+                    className="text-sm font-medium mb-2"
+                    style={{
+                      color: styles.textSecondary,
+                      letterSpacing: "0.02em",
+                    }}
+                  >
+                    {metric.label}
+                  </p>
+                  <p
+                    className="text-3xl font-bold"
+                    style={{
+                      color: cardColors.value,
+                      fontFamily: styles.fontFamily,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {typeof metric.value === 'number' && Number.isInteger(metric.value) ? (
+                      <AnimatedNumber
+                        value={metric.value}
+                        suffix={metric.suffix}
+                        duration={0.8}
+                      />
+                    ) : (
+                      <span>{metric.value}{metric.suffix}</span>
+                    )}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* RAG Charts Section */}
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Similarity Method Usage */}
+            <motion.div
+              variants={chartVariants}
+              className="p-6 rounded-xl border"
+              style={{
+                backgroundColor: styles.cardBg,
+                borderColor: styles.border,
+                backdropFilter: styles.backdropBlur,
+                boxShadow: `0 4px 16px rgba(0, 0, 0, 0.08)`,
+              }}
+              whileHover={{
+                y: -4,
+                boxShadow: `0 8px 24px ${chartColors.bar}40, 0 4px 16px rgba(0, 0, 0, 0.12)`,
+                transition: { duration: 0.2 },
+              }}
+            >
+              <h3
+                className="text-sm font-semibold mb-4"
+                style={{
+                  color: styles.text,
+                  letterSpacing: "0.02em",
+                  fontFamily: styles.fontFamily,
+                }}
+              >
+                Similarity Method Usage
+              </h3>
+              <ResponsiveContainer width="100%" height={240}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: "Cosine", value: ragStats.similarity_method_usage.cosine },
+                      { name: "Euclidean", value: ragStats.similarity_method_usage.euclidean },
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    <Cell fill={chartColors.line} />
+                    <Cell fill={chartColors.bar} />
+                  </Pie>
+                  <Tooltip
+                    content={<CustomTooltip styles={styles} />}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </motion.div>
+
+            {/* Top Sources */}
+            <motion.div
+              variants={chartVariants}
+              className="p-6 rounded-xl border"
+              style={{
+                backgroundColor: styles.cardBg,
+                borderColor: styles.border,
+                backdropFilter: styles.backdropBlur,
+                boxShadow: `0 4px 16px rgba(0, 0, 0, 0.08)`,
+              }}
+              whileHover={{
+                y: -4,
+                boxShadow: `0 8px 24px ${chartColors.bar}40, 0 4px 16px rgba(0, 0, 0, 0.12)`,
+                transition: { duration: 0.2 },
+              }}
+            >
+              <h3
+                className="text-sm font-semibold mb-4"
+                style={{
+                  color: styles.text,
+                  letterSpacing: "0.02em",
+                  fontFamily: styles.fontFamily,
+                }}
+              >
+                Most Retrieved Sources
+              </h3>
+              {ragStats.top_sources.length > 0 ? (
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart
+                    data={ragStats.top_sources}
+                    layout="vertical"
+                    margin={{ left: 10, right: 10 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={styles.border}
+                      opacity={0.1}
+                    />
+                    <XAxis
+                      type="number"
+                      stroke={styles.textSecondary}
+                      style={{ fontSize: "11px" }}
+                      tick={{ fill: styles.textSecondary }}
+                    />
+                    <YAxis
+                      type="category"
+                      dataKey="source"
+                      stroke={styles.textSecondary}
+                      style={{ fontSize: "10px" }}
+                      tick={{ fill: styles.textSecondary }}
+                      width={120}
+                    />
+                    <Tooltip
+                      content={<CustomTooltip styles={styles} />}
+                      cursor={{ fill: styles.border, opacity: 0.1 }}
+                    />
+                    <Bar
+                      dataKey="count"
+                      fill={chartColors.bar}
+                      radius={[0, 8, 8, 0]}
+                      animationDuration={800}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[240px]">
+                  <p style={{ color: styles.textSecondary }}>No source data available yet</p>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+
+          {/* Vector Store Details */}
+          <motion.div
+            className="mt-8 p-6 rounded-xl border"
+            variants={chartVariants}
+            style={{
+              backgroundColor: styles.cardBg,
+              borderColor: styles.border,
+              backdropFilter: styles.backdropBlur,
+              boxShadow: `0 4px 16px rgba(0, 0, 0, 0.08)`,
+            }}
+          >
+            <h3
+              className="text-sm font-semibold mb-4"
+              style={{
+                color: styles.text,
+                letterSpacing: "0.02em",
+                fontFamily: styles.fontFamily,
+              }}
+            >
+              Vector Store Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-lg" style={{ backgroundColor: styles.surface }}>
+                <p className="text-xs mb-1" style={{ color: styles.textSecondary }}>
+                  Embedding Dimension
+                </p>
+                <p className="text-2xl font-bold" style={{ color: chartColors.line }}>
+                  {ragStats.vector_store.embedding_dimension || "N/A"}
+                </p>
+              </div>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: styles.surface }}>
+                <p className="text-xs mb-1" style={{ color: styles.textSecondary }}>
+                  Storage Size
+                </p>
+                <p className="text-2xl font-bold" style={{ color: chartColors.bar }}>
+                  {ragStats.vector_store.total_size_mb} MB
+                </p>
+              </div>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: styles.surface }}>
+                <p className="text-xs mb-1" style={{ color: styles.textSecondary }}>
+                  Total Documents Retrieved
+                </p>
+                <p className="text-2xl font-bold" style={{ color: chartColors.line }}>
+                  {ragStats.total_documents_retrieved}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
     </motion.div>
   );
 }

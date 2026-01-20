@@ -95,3 +95,23 @@ export async function checkHealth(): Promise<boolean> {
   }
 }
 
+/**
+ * Fetch RAG system statistics from the API
+ */
+export async function fetchRAGStats() {
+  try {
+    const baseUrl = getApiBaseUrl();
+    const apiUrl = baseUrl ? `${baseUrl}/api/rag-stats` : "/api/rag-stats";
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch RAG stats: ${response.statusText}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching RAG stats:", error);
+    throw error;
+  }
+}
+

@@ -32,3 +32,34 @@ export interface Metrics {
   mostActiveDay: string; // day of week with most messages
 }
 
+export interface RAGStats {
+  // Vector store information
+  vector_store: {
+    num_documents: number;
+    embedding_dimension: number | null;
+    total_size_mb: number;
+  };
+  
+  // Retrieval quality metrics
+  total_queries: number;
+  total_documents_retrieved: number;
+  avg_documents_per_query: number;
+  avg_relevance_score: number;
+  
+  // Usage patterns
+  similarity_method_usage: {
+    cosine: number;
+    euclidean: number;
+  };
+  top_sources: Array<{
+    source: string;
+    count: number;
+  }>;
+  
+  // Recent activity
+  recent_queries: Array<{
+    timestamp: string;
+    num_results: number;
+  }>;
+}
+

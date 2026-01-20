@@ -7,8 +7,10 @@ from pydantic import BaseModel
 # Import OpenAI client for interacting with OpenAI's API
 from openai import OpenAI
 import os
-from typing import Optional
+from typing import Optional, Dict, Any, List
 from contextlib import asynccontextmanager
+from collections import defaultdict
+from datetime import datetime
 
 # Import document ingestion
 from ingest import router as ingest_router, load_documents_from_data_folder, get_vector_store
@@ -39,6 +41,47 @@ app.add_middleware(
 # Include document ingestion endpoints
 app.include_router(ingest_router)
 
+# RAG Statistics Storage
+# This tracks retrieval quality and usage patterns
+rag_statistics: Dict[str, Any] = {
+    "total_queries": 0,
+    "total_documents_retrieved": 0,
+    "avg_relevance_score": 0.0,
+    "similarity_method_usage": {"cosine": 0, "euclidean": 0},
+    "source_usage": defaultdict(int),  # Track how often each source is retrieved
+    "queries_over_time": [],  # Track when queries happen
+    "relevance_scores": [],  # Store all scores for calculating averages
+}
+
+def update_rag_stats(search_results: List[Dict[str, Any]], similarity_method: str) -> None:
+    """Update RAG statistics with new search results."""
+    rag_statistics["total_queries"] += 1
+    rag_statistics["total_documents_retrieved"] += len(search_results)
+    rag_statistics["similarity_method_usage"][similarity_method] += 1
+    
+    # Track query timestamp
+    rag_statistics["queries_over_time"].append({
+        "timestamp": datetime.now().isoformat(),
+        "num_results": len(search_results)
+    })
+    
+    # Track relevance scores and source usage
+    for result in search_results:
+        score = result.get("score", 0.0)
+        rag_statistics["relevance_scores"].append(score)
+        
+        # Track source from metadata
+        metadata = result.get("metadata", {})
+        source = metadata.get("source", "unknown")
+        if source and source != "unknown":
+            # Extract filename from path
+            source_name = os.path.basename(source) if "/" in source or "\\" in source else source
+            rag_statistics["source_usage"][source_name] += 1
+    
+    # Update average relevance score
+    if rag_statistics["relevance_scores"]:
+        rag_statistics["avg_relevance_score"] = sum(rag_statistics["relevance_scores"]) / len(rag_statistics["relevance_scores"])
+
 # Define the data model for chat requests using Pydantic
 # This ensures incoming request data is properly validated
 class ChatRequest(BaseModel):
@@ -63,6 +106,9 @@ async def chat(request: ChatRequest):
             top_k=3,
             similarity_method=request.similarity_method
         )
+        
+        # Track RAG statistics
+        update_rag_stats(search_results, request.similarity_method)
         
         # Build prompt using templates
         system_message, user_message = PromptTemplates.build_rag_prompt(
@@ -103,6 +149,52 @@ async def chat(request: ChatRequest):
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok"}
+
+# Define RAG statistics endpoint
+@app.get("/api/rag-stats")
+async def get_rag_stats():
+    """
+    Returns RAG system statistics including:
+    - Vector store information (number of documents, size)
+    - Retrieval quality metrics (average relevance scores)
+    - Usage patterns (similarity methods, source frequency)
+    """
+    try:
+        vector_store = get_vector_store()
+        vector_stats = vector_store.get_stats()
+        
+        # Get top 5 most frequently retrieved sources
+        top_sources = sorted(
+            rag_statistics["source_usage"].items(),
+            key=lambda x: x[1],
+            reverse=True
+        )[:5]
+        
+        return {
+            # Vector store stats
+            "vector_store": vector_stats,
+            
+            # Retrieval quality
+            "total_queries": rag_statistics["total_queries"],
+            "total_documents_retrieved": rag_statistics["total_documents_retrieved"],
+            "avg_documents_per_query": (
+                rag_statistics["total_documents_retrieved"] / rag_statistics["total_queries"]
+                if rag_statistics["total_queries"] > 0 else 0
+            ),
+            "avg_relevance_score": round(rag_statistics["avg_relevance_score"], 3),
+            
+            # Usage patterns
+            "similarity_method_usage": dict(rag_statistics["similarity_method_usage"]),
+            "top_sources": [
+                {"source": source, "count": count}
+                for source, count in top_sources
+            ],
+            
+            # Recent activity (last 10 queries)
+            "recent_queries": rag_statistics["queries_over_time"][-10:] if rag_statistics["queries_over_time"] else [],
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Entry point for running the application directly
 if __name__ == "__main__":
